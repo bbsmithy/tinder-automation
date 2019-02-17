@@ -5,20 +5,20 @@ import features
 import sys
 import util
 import phone_auth_token
+import event_emitter
 
 
 class TinderBot:
 
     def __init__(self):
-        print('TinderBot created')
         self.auth_token = ""
         self.req_code = ""
         self.phone_number = ""
 
-    def get_meta():
+    def get_meta(self):
         return tinder_api.get_meta()
         
-    def message_matches(matches):
+    def message_matches(self, matches):
         for match in matches:
             match_id = match["_id"]
             features.pause()
@@ -27,27 +27,28 @@ class TinderBot:
             print("Messaged "+match["name"]+": "+message)
 
 
-    def print_stats(matches, results):
+    def print_stats(self, matches, results):
         matches_count = len(matches)
         success_rate = len(matches) // len(results) * 100
         print("Matched with: " + len(matches) + " people");
         print("Success rate: " + success_rate + "%");
 
 
-    def check_for_matches(check_since_time):
+    def check_for_matches(self, check_since_time):
         updates = tinder_api.get_matches(check_since_time)
         return updates['matches']
 
 
-    def find_matches(results):
-        starting_time = util.get_time()
+    def find_matches(self, results):
+        # starting_time = util.get_time()
         for rec in results:
             tinder_api.like(rec['_id'])
+            print('Liked '+rec['name'])
+            event_emitter.emit('like', rec['_id'])
             features.pause()
-            print('Liked '+rec["name"])
 
-        matches = check_for_matches(starting_time)
-        message_matches(matches)
+        # matches = check_for_matches(starting_time)
+        # message_matches(matches)
        
 
 
@@ -75,12 +76,12 @@ class TinderBot:
         return tinder_api.get_self()
 
     #Start the bot
-    def start_bot(self, cb):
+    def start_bot(self):
         recs = self.get_recs()
         if recs['status']==200:  
             results = recs["results"] 
-            cb(results)
-            find_matches(results)
+            event_emitter.emit_recs(results)
+            self.find_matches(results)
         else:
             print(recs)
 

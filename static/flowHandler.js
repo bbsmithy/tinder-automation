@@ -350,7 +350,7 @@ function render(screen){
 //When page is ready check if profile has been logged in and nvaigate to launch screen
 //If not go to login page (facebook)
 $(document).ready(function(){
-	var profile = window.localStorage.getItem("profile")
+	var profile = window.sessionStorage.getItem("profile")
 	if(profile){
 		render(flow.launch(JSON.parse(profile)));
 	}else{

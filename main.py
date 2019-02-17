@@ -1,26 +1,13 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from tinder_bot import TinderBot
+import event_emitter
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 bot = TinderBot()
-
-
-#Success Callbacks
-def emit_logged_in(profile):
-    emit('logged_in', profile)
-
-def emit_recs(results):
-    emit('recs', results)
-
-def emit_phone_auth_success():
-	emit('phone_auth_success')
-
-def emit_phone_auth_failure():
-	emit('phone_auth_failure')
 
 # App page
 @app.route('/')
@@ -36,28 +23,29 @@ def connect():
 @socketio.on('disconnect', namespace='/test')
 def disconnect():
     print('Client disconnected')
+    # bot.stop_bot()
 
 #Custom events
 @socketio.on('get_recs', namespace='/test')
 def get_recommendations():
-    message = bot.start_bot(emit_recs)
+    bot.start_bot()
 
 @socketio.on('login', namespace='/test')
 def login(data):
     profile = bot.login_facebook(data)
-    emit_logged_in(profile)
+    event_emitter.emit_logged_in(profile)
 
 @socketio.on('login_phone', namespace='/test')
 def login_phone(number):
 	if bot.login_phone_number(number):
-		emit_phone_auth_success()
+		event_emitter.emit_phone_auth_success()
 	else:
-		emit_phone_auth_failure()
+		event_emitter.emit_phone_auth_failure()
 
 @socketio.on('code', namespace="/test")
 def send_code(code):
 	profile = bot.get_phone_auth_token(code)
-	emit_logged_in(profile)
+	event_emitter.emit_logged_in(profile)
     
 
     

@@ -1,9 +1,0 @@
-Tinder automation flow:
-
-The first step should allow user to choose login method and login, either facebook or phone number auth
-
-The second step should allow user to view current matches/count and view their profile it should also allow the user to start the script
-
-The third step should display a realtime view of recommendations and the process of swipping on them
-
-The fourth step should display your matches and success rate with an option to send all messages button

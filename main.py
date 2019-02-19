@@ -7,7 +7,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-bot = TinderBot()
+def socketSleep(seconds):
+    socketio.sleep(seconds)
+
+bot = TinderBot(socketSleep)
 
 # App page
 @app.route('/')
@@ -34,6 +37,7 @@ def get_recommendations():
 def login(data):
     profile = bot.login_facebook(data)
     event_emitter.emit_logged_in(profile)
+    bot.init_bot()
 
 @socketio.on('login_phone', namespace='/test')
 def login_phone(number):
@@ -44,8 +48,9 @@ def login_phone(number):
 
 @socketio.on('code', namespace="/test")
 def send_code(code):
-	profile = bot.get_phone_auth_token(code)
-	event_emitter.emit_logged_in(profile)
+    profile = bot.get_phone_auth_token(code)
+    event_emitter.emit_logged_in(profile)
+    bot.init_bot()
     
 
     

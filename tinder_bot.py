@@ -8,12 +8,15 @@ import phone_auth_token
 import event_emitter
 
 
+
 class TinderBot:
 
-    def __init__(self):
+    def __init__(self, sleepFunction):
         self.auth_token = ""
         self.req_code = ""
         self.phone_number = ""
+        self.results = []
+        self.socketSleep = sleepFunction
 
     def get_meta(self):
         return tinder_api.get_meta()
@@ -40,12 +43,17 @@ class TinderBot:
 
 
     def find_matches(self, results):
-        # starting_time = util.get_time()
-        for rec in results:
+        starting_time = util.get_time()
+        for idx, rec in enumerate(results):
             tinder_api.like(rec['_id'])
             print('Liked '+rec['name'])
-            event_emitter.emit('like', rec['_id'])
-            features.pause()
+            event_emitter.emit_like(rec['_id'])
+            if idx % 5 == 0:
+                tinder_api.get_updates(starting_time)
+            self.socketSleep(2)
+
+
+
 
         # matches = check_for_matches(starting_time)
         # message_matches(matches)
@@ -77,11 +85,14 @@ class TinderBot:
 
     #Start the bot
     def start_bot(self):
+        self.find_matches(self.results)
+       
+
+    def init_bot(self):
         recs = self.get_recs()
         if recs['status']==200:  
-            results = recs["results"] 
-            event_emitter.emit_recs(results)
-            self.find_matches(results)
+            self.results = recs["results"] 
+            event_emitter.emit_recs(self.results)
         else:
             print(recs)
 

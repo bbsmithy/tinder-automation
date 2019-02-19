@@ -42,9 +42,9 @@ function sendAuthCode(){
 	}
 }
 
-//Get recomendations from server
-function getRecs(){
-	socket.emit('get_recs')
+//Start finding matches
+function findMatches(){
+	socket.emit('find_matches')
 }
 
 //Functional UI Screens
@@ -312,7 +312,8 @@ var screens = {
 								<p>'+bio+'</p>\
 							</div>\
 						</div>\
-						<button class="btn btn-primary btn-block" onclick="getRecs()">Start Bot</button>\
+						<button class="btn btn-primary btn-block" onclick="findMatches()">Start Bot</button>\
+						<button class="btn btn-danger btn-block">Stop Bot</button>\
 					</div>\
 					<div class="col-md-9" id="results-container">\
 						<div class="card" id="results-stats">\

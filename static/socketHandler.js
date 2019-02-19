@@ -26,17 +26,35 @@ function createResultCard(result){
 			</div>'
 }
 
+function renderRecs(recs){
+	for (var i = 0; i < recs.length; i++) {	
+		cardResult = createResultCard({
+			name: recs[i].name,
+			photo: recs[i].photos[0].url,
+			bio: recs[i].bio,
+			birthDate: recs[i].birth_date,
+			id: recs[i]._id
+		})
+		$('#results-container').append(cardResult)
+	}
+}
+
 
 // Socket event listeners for handling data recieved from the server
 socket.on('connect', function() {
     console.log("Server connected")
 });
 
+socket.on('disconnect', function() {
+    console.log("Server disconnected")
+});
+
 //When logged stringify and save profile to local storage
 //Then navigate to launch screen
-socket.on('logged_in', function(profile) {
+socket.on('logged_in', function(profile, initialRecs) {
 	window.sessionStorage.setItem("profile", JSON.stringify(profile));
     render(flow.launch(profile))
+    renderRecs(initialRecs)
 });
 
 socket.on('phone_auth_success', function(){
@@ -49,16 +67,7 @@ socket.on('phone_auth_failure', function(){
 
 //When recommendations are received from the server
 socket.on('recs', function(recs){
-	for (var i = 0; i < recs.length; i++) {	
-		cardResult = createResultCard({
-			name: recs[i].name,
-			photo: recs[i].photos[0].url,
-			bio: recs[i].bio,
-			birthDate: recs[i].birth_date,
-			id: recs[i]._id
-		})
-		$('#results-container').append(cardResult)
-	}
+	renderRecs(recs)
 })
 
 

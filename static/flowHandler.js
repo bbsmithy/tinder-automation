@@ -316,11 +316,6 @@ var screens = {
 						<button class="btn btn-danger btn-block">Stop Bot</button>\
 					</div>\
 					<div class="col-md-9" id="results-container">\
-						<div class="card" id="results-stats">\
-						  <div class="card-body">\
-						    Session success rate:\
-						  </div>\
-						</div>\
 					</div>\
 				</div>'
 	}

@@ -90,10 +90,3 @@ class TinderBot:
             event_emitter.emit_recs(self.results)
         else:
             print(recs)
-
-    #get results -> send to client
-    #foreach result
-        #like index -> send index to client -> remove from results ss -> show love heart for second -> remove from list cs
-    #check for matches -> send matches to client -> display matches client side with option to send all
-    #type message and send to server -> run message matches ss
-    #

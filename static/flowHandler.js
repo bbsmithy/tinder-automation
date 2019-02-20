@@ -1,12 +1,12 @@
 
 //Switch to facebook login screen
 function onSwitchFacebook(){
-	render(flow.login("F"))
+	renderPage(flow.login("F"))
 }
 
 //Switch to phone login screen
 function onSwitchPhone(){
-	render(flow.login("P"))
+	renderPage(flow.login("P"))
 }
 
 //Send login event to server
@@ -338,7 +338,7 @@ var flow = {
 
 
 //Render function sets screen to main view
-function render(screen){
+function renderPage(screen){
 	$("#main").html(screen)
 }
 
@@ -348,8 +348,8 @@ function render(screen){
 $(document).ready(function(){
 	var profile = window.sessionStorage.getItem("profile")
 	if(profile){
-		render(flow.launch(JSON.parse(profile)));
+		renderPage(flow.launch(JSON.parse(profile)));
 	}else{
-		render(flow.login("P"))
+		renderPage(flow.login("P"))
 	}
 })

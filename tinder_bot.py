@@ -33,7 +33,7 @@ class TinderBot:
     def print_stats(self, matches, results):
         matches_count = len(matches)
         success_rate = len(matches) // len(results) * 100
-        print("Matched with: " + len(matches) + " people");
+        print("Matched with: " + matches_count + " people");
         print("Success rate: " + success_rate + "%");
 
 
@@ -49,14 +49,9 @@ class TinderBot:
             print('Liked '+rec['name'])
             event_emitter.emit_like(rec['_id'])
             if idx % 5 == 0:
-                tinder_api.get_updates(starting_time)
+                matches = tinder_api.get_updates(starting_time)
+                print(matches)
             self.socketSleep(2)
-
-
-
-
-        # matches = check_for_matches(starting_time)
-        # message_matches(matches)
        
 
 

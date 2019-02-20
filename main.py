@@ -29,7 +29,7 @@ def disconnect():
     # bot.stop_bot()
 
 #Custom events
-@socketio.on('get_recs', namespace='/test')
+@socketio.on('find_matches', namespace='/test')
 def get_recommendations():
     bot.start_bot()
 

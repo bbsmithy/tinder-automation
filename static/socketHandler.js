@@ -53,7 +53,7 @@ socket.on('disconnect', function() {
 //Then navigate to launch screen
 socket.on('logged_in', function(profile, initialRecs) {
 	window.sessionStorage.setItem("profile", JSON.stringify(profile));
-    render(flow.launch(profile))
+    renderPage(flow.launch(profile))
     renderRecs(initialRecs)
 });
 

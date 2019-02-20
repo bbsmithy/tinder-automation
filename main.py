@@ -60,12 +60,3 @@ if __name__ == '__main__':
 
 
 
-
-# Serve the page
-## List of recommendations with image and name
-# Start the bot
-# Pass data from bot to page through sockets
-# Render recommendations
-
-
-

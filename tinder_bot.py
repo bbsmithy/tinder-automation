@@ -45,13 +45,17 @@ class TinderBot:
     def find_matches(self, results):
         starting_time = util.get_time()
         for idx, rec in enumerate(results):
-            tinder_api.like(rec['_id'])
-            print('Liked '+rec['name'])
-            event_emitter.emit_like(rec['_id'])
-            if idx % 5 == 0:
-                matches = tinder_api.get_updates(starting_time)
-                print(matches)
-            self.socketSleep(2)
+            if self.bot_alive is True:
+                tinder_api.like(rec['_id'])
+                print('Liked '+rec['name'])
+                event_emitter.emit_like(rec['_id'])
+                del self.results[idx]
+                if idx % 5 == 0:
+                    matches = tinder_api.get_updates(starting_time)
+                    print(matches)
+                self.socketSleep(2)
+            else:
+                break
        
 
 
@@ -79,7 +83,12 @@ class TinderBot:
         return tinder_api.get_self()
 
     #Start the bot
+    def stop_bot(self):
+        self.bot_alive = False
+
+    #Start the bot
     def start_bot(self):
+        self.bot_alive = True
         self.find_matches(self.results)
        
 

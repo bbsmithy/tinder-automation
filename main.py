@@ -26,7 +26,13 @@ def connect():
 @socketio.on('disconnect', namespace='/test')
 def disconnect():
     print('Client disconnected')
-    # bot.stop_bot()
+    bot.stop_bot()
+
+@socketio.on('stop_bot', namespace="/test")
+def stop_bot():
+    profile = bot.get_phone_auth_token(code)
+    event_emitter.emit_logged_in(profile)
+    bot.stop_bot()
 
 #Custom events
 @socketio.on('find_matches', namespace='/test')

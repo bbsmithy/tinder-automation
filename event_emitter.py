@@ -2,10 +2,11 @@
 from flask_socketio import emit
 
 def emit_logged_in(profile):
-    emit('logged_in', profile, namespace='/test')
+	emit('logged_in', profile, namespace='/test')
 
 def emit_recs(results):
-    emit('recs', results, namespace='/test')
+	emit('recs', results, namespace='/test')
+	print(results)
 
 def emit_phone_auth_success():
 	emit('phone_auth_success', namespace='/test')

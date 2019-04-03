@@ -1,55 +1,64 @@
-
 //Switch to facebook login screen
-function onSwitchFacebook(){
-	renderPage(flow.login("F"))
+function onSwitchFacebook() {
+  renderPage(flow.login("F"));
 }
 
 //Switch to phone login screen
-function onSwitchPhone(){
-	renderPage(flow.login("P"))
+function onSwitchPhone() {
+  renderPage(flow.login("P"));
 }
 
 //Send login event to server
-function login(){
-	var fb_email = $('#fb_email').val();
-	var fb_password = $('#fb_password').val();
-	if(fb_email && fb_password){
-		socket.emit('login', {email: fb_email, password: fb_password, method: "F"})
-	}else{
-		alert('Please fill in email and password')
-	}
+function login() {
+  var fb_email = $("#fb_email").val();
+  var fb_password = $("#fb_password").val();
+  if (fb_email && fb_password) {
+    socket.emit("login", {
+      email: fb_email,
+      password: fb_password,
+      method: "F"
+    });
+  } else {
+    alert("Please fill in email and password");
+  }
 }
 
 //Send phone auth number
-function authPhoneNumber(){
-	var number = $('#phoneNumber').val()
-	var intCode = $('#selectIntCode').val()
-	if(number.match(/\d{10}/)){
-		var fullNumber = '+'+intCode+number
-		socket.emit('login_phone', fullNumber)
-	}else{
-		console.log('NaN')
-	}
+function authPhoneNumber() {
+  var number = $("#phoneNumber").val();
+  var intCode = $("#selectIntCode").val();
+  if (number.match(/\d{10}/)) {
+    var fullNumber = "+" + intCode + number;
+    socket.emit("login_phone", fullNumber);
+  } else {
+    console.log("NaN");
+  }
 }
 
 //Send auth code
-function sendAuthCode(){
-	var code = $('#codeNumber').val()
-	if(code.match(/\d{6}/)){
-		socket.emit('code', code)
-	}else{
-		console.log('Code is not valid')
-	}
+function sendAuthCode() {
+  var code = $("#codeNumber").val();
+  if (code.match(/\d{6}/)) {
+    socket.emit("code", code);
+  } else {
+    console.log("Code is not valid");
+  }
 }
 
 //Start finding matches
-function findMatches(){
-	socket.emit('find_matches')
+function findMatches() {
+  socket.emit("find_matches");
+}
+
+//Start finding matches
+function stopBot() {
+  socket.emit("stop_bot");
 }
 
 //Functional UI Screens
 var screens = {
-	facebookLogin: function(){return '<div class="jumbotron">\
+  facebookLogin: function() {
+    return '<div class="jumbotron">\
 					<div class="class="form-group">\
     					<h4 class="login-heading">Facebook Login</h4>\
     					<input type="text" name="email" placeholder="Enter facebook email" id="fb_email"/>\
@@ -59,9 +68,10 @@ var screens = {
 					<div class="switch-btn">\
 						<button class="btn btn-primary" onclick="onSwitchPhone()">Switch to phone number login</button>\
 					</div>\
-				</div>'},
-	phoneLogin: function(){
-		return '<div class="jumbotron">\
+				</div>';
+  },
+  phoneLogin: function() {
+    return '<div class="jumbotron">\
 					<div class="class="form-group">\
     					<h4 class="login-heading">Phone Login</h4>\
     					<select name="countryCode" id="selectIntCode">\
@@ -295,61 +305,66 @@ var screens = {
 					<div class="switch-btn">\
 						<button class="btn btn-primary" onclick="onSwitchFacebook()">Switch to Facebook login</button>\
 					</div>\
-				</div>'},
-	launch: function(profile){
+				</div>';
+  },
+  launch: function(profile) {
+    var profilePic = profile.photos[0].url;
+    var name = profile.name;
+    var bio = profile.bio;
 
-		var profilePic = profile.photos[0].url
-		var name = profile.name
-		var bio = profile.bio
-
-		return '<div class="row">\
+    return (
+      '<div class="row">\
 					<div class="col-md-3">\
 						<div class="card">\
 							<div class="card-body">\
-								<img src="'+profilePic+'" style="width: 100%" class="img-responsive"/>\
-								<h3 style="margin-top: 10px">'+name+'</h3>\
+								<img src="' +
+      profilePic +
+      '" style="width: 100%" class="img-responsive"/>\
+								<h3 style="margin-top: 10px">' +
+      name +
+      "</h3>\
 								<hr/>\
-								<p>'+bio+'</p>\
+								<p>" +
+      bio +
+      '</p>\
 							</div>\
 						</div>\
 						<button class="btn btn-primary btn-block" onclick="findMatches()">Start Bot</button>\
-						<button class="btn btn-danger btn-block">Stop Bot</button>\
+						<button class="btn btn-danger btn-block"  onclick="stopBot()">Stop Bot</button>\
 					</div>\
 					<div class="col-md-9" id="results-container">\
 					</div>\
 				</div>'
-	}
+    );
+  }
 };
-
 
 //UI Flow options
 var flow = {
-	login: function(loginType){
-		if(loginType === "F"){
-			return screens.facebookLogin();
-		}else{
-			return screens.phoneLogin();
-		}
-	},
-	launch: function(profile){
-		return screens.launch(profile)
-	}
-}
-
+  login: function(loginType) {
+    if (loginType === "F") {
+      return screens.facebookLogin();
+    } else {
+      return screens.phoneLogin();
+    }
+  },
+  launch: function(profile) {
+    return screens.launch(profile);
+  }
+};
 
 //Render function sets screen to main view
-function renderPage(screen){
-	$("#main").html(screen)
+function renderPage(screen) {
+  $("#main").html(screen);
 }
-
 
 //When page is ready check if profile has been logged in and nvaigate to launch screen
 //If not go to login page (facebook)
-$(document).ready(function(){
-	var profile = window.sessionStorage.getItem("profile")
-	if(profile){
-		renderPage(flow.launch(JSON.parse(profile)));
-	}else{
-		renderPage(flow.login("P"))
-	}
-})
+$(document).ready(function() {
+  var profile = window.sessionStorage.getItem("profile");
+  if (profile) {
+    renderPage(flow.launch(JSON.parse(profile)));
+  } else {
+    renderPage(flow.login("P"));
+  }
+});

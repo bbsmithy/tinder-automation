@@ -1,7 +1,7 @@
-proxying.txt
 config.py
-api_abstract.py
 *.pyc
 __pycache__
-find.py
 *.log
+*.txt
+*.py.swp
+*.json

@@ -1,68 +1,75 @@
-from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
 from tinder_bot import TinderBot
-import event_emitter
+import urllib3
+import argparse
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+parser = argparse.ArgumentParser(description="Flip a switch by setting a flag")
+parser.add_argument(
+    '-m', type=str, help="Input for mobile number for mobile authentication option")
+parser.add_argument(
+    '-p', type=str, help="Input for Facebook password for Facebook authentication option")
+parser.add_argument(
+    '-e', type=str,  help="Input for Facebook email for Facebook authentication option")
 
-def socketSleep(seconds):
-    socketio.sleep(seconds)
-
-bot = TinderBot(socketSleep)
-
-# App page
-@app.route('/')
-def index():
-    return render_template('index.html')
+args = parser.parse_args()
 
 
-#Socket IO events
-@socketio.on('connect', namespace='/test')
-def connect():
-    print('Client connected')
+# Command line arguments
+# -m: Mobile number login
+# -e: Email facebook login
+# -ps: Password facebook login
+# -help: Gets help
 
-@socketio.on('disconnect', namespace='/test')
-def disconnect():
-    print('Client disconnected')
-    bot.stop_bot()
+# -config: config file json file (if found ignore all other commands)
+# {'login_type': 'facebook', 'email': 'bean.smith77@gmail.com', 'password': 'some_passy_word', 'number': '0838100085'}
 
-@socketio.on('stop_bot', namespace="/test")
-def stop_bot():
-    profile = bot.get_phone_auth_token(code)
-    event_emitter.emit_logged_in(profile)
-    bot.stop_bot()
+# Example way to run
+# python3 tinder-automation -m
 
-#Custom events
-@socketio.on('find_matches', namespace='/test')
-def get_recommendations():
-    bot.start_bot()
+bot = TinderBot()
 
-@socketio.on('login', namespace='/test')
-def login(data):
-    profile = bot.login_facebook(data)
-    event_emitter.emit_logged_in(profile)
-    bot.init_bot()
 
-@socketio.on('login_phone', namespace='/test')
-def login_phone(number):
-	if bot.login_phone_number(number):
-		event_emitter.emit_phone_auth_success()
-	else:
-		event_emitter.emit_phone_auth_failure()
+def initialize_bot_mobile(phone_number):
+    bot.login_phone_number(phone_number)
+    code = input("Enter code sent to your number:")
+    token = bot.get_phone_auth_token(code)
+    f = open("token.txt", "w")
+    f.write(token)
+    f.close()
+    bot.start_bot(token)
 
-@socketio.on('code', namespace="/test")
-def send_code(code):
-    profile = bot.get_phone_auth_token(code)
-    event_emitter.emit_logged_in(profile)
-    bot.init_bot()
-    
 
-    
+def read_token():
+    try:
+        f = open("token.txt", "r")
+        return f.read()
+    except:
+        return False
+
+
+def mobile_login(phone_number):
+    saved_token = read_token()
+    if saved_token:
+        status = bot.start_bot(saved_token)
+        if status != 200:
+            initialize_bot_mobile(phone_number)
+    else:
+        initialize_bot_mobile(phone_number)
+
+
+def facebook_login():
+    print('Rewrite facebook login using flags please Brian...please do it now please...did you hear me?')
+
 
 if __name__ == '__main__':
-    socketio.run(app)
-
-
-
+    if args.m:
+        mobile_login(args.m)
+    elif args.e and args.p:
+        print("Facebook login")
+        print(args.e)
+        print(args.p)
+    else:
+        print("Please provide arguments or config file")
+        print("-m: Mobile number for mobile authentication")
+        print("-p: Facebook password for Facebook authentication")
+        print("-e: Facebook email for Facebook authentication")

@@ -13,9 +13,9 @@ gender, message count, and their average successRate.
 '''
 
 
-def get_match_info():
-    matches = api.get_updates()['matches']
-    now = datetime.utcnow()
+def get_match_info(start_date=""):
+    matches = api.get_updates(start_date)['matches']
+    print(matches)
     match_info = {}
     for match in matches[:len(matches)]:
         try:
@@ -26,7 +26,7 @@ def get_match_info():
                 "match_id": match['id'],  # This ID for messaging
                 "message_count": match['message_count'],
                 "photos": get_photos(person),
-                "bio": person['bio'],
+                "bio": person['bio'] if person['bio'] else '',
                 "gender": person['gender'],
                 "avg_successRate": get_avg_successRate(person),
                 "messages": match['messages'],
@@ -157,6 +157,7 @@ def pause():
     nap_length = 3 * random()
     print('Napping for %f seconds...' % nap_length)
     sleep(nap_length)
+
 
 if __name__ == '__main__':
     if api.authverif() == True:

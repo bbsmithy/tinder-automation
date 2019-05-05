@@ -29,8 +29,9 @@ class TinderBot:
         if isinstance(matches, list):
             for match in matches:
                 match_f = open("matches.json", "a")
-                match_f.write(match)
-                match_f.close()               
+                json_match = json.dump(match)
+                match_f.write(json_match, separators=(',', ':'))
+                match_f.close()
                 match_id = match['_id']
                 features.pause()
                 message = "Good evening...."

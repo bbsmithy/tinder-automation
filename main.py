@@ -57,17 +57,16 @@ def mobile_login(phone_number):
         initialize_bot_mobile(phone_number)
 
 
-def facebook_login():
-    print('Rewrite facebook login using flags please Brian...please do it now please...did you hear me?')
+def facebook_login(email, password):
+    print("Email: {0} Password: {1}".format(email, password))
+    print('Facebook login feature will be added soon')
 
 
 if __name__ == '__main__':
     if args.m:
         mobile_login(args.m)
     elif args.e and args.p:
-        print("Facebook login")
-        print(args.e)
-        print(args.p)
+        facebook_login(args.e, args.p)
     else:
         print("Please provide arguments or config file")
         print("-m: Mobile number for mobile authentication")

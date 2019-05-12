@@ -37,11 +37,11 @@ class TinderBot:
 
         else:
             match_id = matches['_id']
-            print(matches)
-            features.pause()
             message = "Good evening...."
             tinder_api.send_msg(match_id, message)
-            print("Messaged "+match.person.name+": "+message)
+            log_message = "Messaged {0}:{1}".format(
+                match['person']['name'], message)
+            print(log_message)
 
     def print_details(self, rec):
         print('Liked '+rec['name'] + ' | ' + rec['bio'])

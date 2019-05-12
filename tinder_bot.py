@@ -16,8 +16,7 @@ class TinderBot:
 
     def __get_new_matches(self, matches):
         new_matches_number = len(matches) - self.old_matches_num
-        print("New matches:")
-        print(new_matches_number)
+        print("New matches: {0}".format(new_matches_number))
         if new_matches_number == 0:
             return False
         if new_matches_number == 1:
@@ -28,15 +27,14 @@ class TinderBot:
     def __message_matches(self, matches):
         if isinstance(matches, list):
             for match in matches:
-                match_f = open("matches.json", "a")
-                json_match = json.dump(match)
-                match_f.write(json_match, separators=(',', ':'))
-                match_f.close()
                 match_id = match['_id']
                 features.pause()
                 message = "Good evening...."
                 tinder_api.send_msg(match_id, message)
-                print("Messaged "+match.person.name+": "+message)
+                log_message = "Messaged {0}:{1}".format(
+                    match['person']['name'], message)
+                print(log_message)
+
         else:
             match_id = matches['_id']
             print(matches)

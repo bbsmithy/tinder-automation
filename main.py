@@ -35,8 +35,7 @@ def initialize_bot_facebook(email, password):
     fb_token = fb_auth_token.get_fb_access_token(email, password)
     fb_id = fb_auth_token.get_fb_id(fb_token)
     tinder_token = bot.login_facebook(fb_token, fb_id)
-    print(tinder_token)
-    bot.start_bot(tinder_token)
+    return bot.start_bot(tinder_token)
 
 
 def initialize_bot_mobile(phone_number):
@@ -46,7 +45,7 @@ def initialize_bot_mobile(phone_number):
     f = open("token.txt", "w")
     f.write(token)
     f.close()
-    bot.start_bot(token)
+    return bot.start_bot(token)
 
 
 def read_token():
@@ -62,19 +61,19 @@ def mobile_login(phone_number):
     if saved_token:
         status = bot.start_bot(saved_token)
         if status != 200:
-            initialize_bot_mobile(phone_number)
+            return initialize_bot_mobile(phone_number)
     else:
-        initialize_bot_mobile(phone_number)
+        return initialize_bot_mobile(phone_number)
 
 
 def facebook_login(email, password):
-    # saved_token = read_token()
-    # if saved_token:
-    #     status = bot.start_bot(saved_token)
-    #     if status != 200:
-    #         initialize_bot_facebook(email, password)
-    # else:
-    initialize_bot_facebook(email, password)
+    saved_token = read_token()
+    if saved_token:
+        status = bot.start_bot(saved_token)
+        if status != 200:
+            initialize_bot_facebook(email, password)
+    else:
+        initialize_bot_facebook(email, password)
 
 
 if __name__ == '__main__':

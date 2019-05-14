@@ -61,6 +61,11 @@ class TinderBot:
     def __get_all_matches(self):
         return tinder_api.get_updates()['matches']
 
+    def login_facebook(self, fb_token, fb_id):
+        self.auth_token = tinder_api.get_auth_token(fb_token, fb_id)
+        tinder_api.update_xauth_token(self.auth_token)
+        return self.auth_token
+
     def login_phone_number(self, number):
         self.req_code = phone_auth_token.phone_login(number)
         self.phone_number = number

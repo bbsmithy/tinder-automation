@@ -1,6 +1,8 @@
 from tinder_bot import TinderBot
 import urllib3
 import argparse
+import fb_auth_token
+import tinder_api
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 parser = argparse.ArgumentParser(description="Flip a switch by setting a flag")
@@ -27,6 +29,14 @@ args = parser.parse_args()
 # python3 tinder-automation -m
 
 bot = TinderBot()
+
+
+def initialize_bot_facebook(email, password):
+    fb_token = fb_auth_token.get_fb_access_token(email, password)
+    fb_id = fb_auth_token.get_fb_id(fb_token)
+    tinder_token = bot.login_facebook(fb_token, fb_id)
+    print(tinder_token)
+    bot.start_bot(tinder_token)
 
 
 def initialize_bot_mobile(phone_number):
@@ -58,8 +68,13 @@ def mobile_login(phone_number):
 
 
 def facebook_login(email, password):
-    print("Email: {0} Password: {1}".format(email, password))
-    print('Facebook login feature will be added soon')
+    # saved_token = read_token()
+    # if saved_token:
+    #     status = bot.start_bot(saved_token)
+    #     if status != 200:
+    #         initialize_bot_facebook(email, password)
+    # else:
+    initialize_bot_facebook(email, password)
 
 
 if __name__ == '__main__':

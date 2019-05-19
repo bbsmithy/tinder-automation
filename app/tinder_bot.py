@@ -3,6 +3,7 @@ import sys
 import time
 
 from app.phone_auth_token import phone_login, getToken
+from app.fb_auth_token import get_fb_access_token, get_fb_id
 from app.tinder_api import send_msg, like, get_recommendations, get_updates, get_auth_token, update_xauth_token
 from app.features import pause
 
@@ -62,7 +63,13 @@ class TinderBot:
     def __get_all_matches(self):
         return get_updates()['matches']
 
-    def login_facebook(self, fb_token, fb_id):
+    def login_facebook(self, email, password):
+        fb_token = get_fb_access_token(email, password)
+        fb_id = get_fb_id(fb_token)
+
+        return {fb_token, fb_id}
+
+    def get_facebook_auth_token(self, fb_token, fb_id):
         self.auth_token = get_auth_token(fb_token, fb_id)
         update_xauth_token(self.auth_token)
         return self.auth_token
@@ -70,7 +77,7 @@ class TinderBot:
     def login_phone_number(self, number):
         self.req_code = phone_login(number)
         self.phone_number = number
-        return True
+        return self.req_code
 
     def get_phone_auth_token(self, code):
         self.auth_token = getToken(

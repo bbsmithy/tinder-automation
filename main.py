@@ -1,7 +1,6 @@
 import urllib3
 import argparse
 from app.tinder_bot import TinderBot
-from app.fb_auth_token import get_fb_access_token, get_fb_id
 from app.config import CONFIG
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -19,9 +18,8 @@ bot = TinderBot()
 
 
 def initialize_bot_facebook(email, password):
-    fb_token = get_fb_access_token(email, password)
-    fb_id = get_fb_id(fb_token)
-    tinder_token = bot.login_facebook(fb_token, fb_id)
+    fb_token, fb_id = bot.login_facebook(email, password)
+    tinder_token = bot.get_facebook_auth_token(fb_token, fb_id)
     return bot.start_bot(tinder_token)
 
 

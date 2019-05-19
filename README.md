@@ -1,6 +1,6 @@
 # Tinder Automation
 
-A tool for automating liking/messaging on Tinder....the rest is up to you.
+A tool for automating liking/messaging on Tinder
 
 ## Command line arguments:
 

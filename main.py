@@ -20,6 +20,7 @@ bot = TinderBot()
 def initialize_bot_facebook(email, password):
     fb_token, fb_id = bot.login_facebook(email, password)
     tinder_token = bot.get_facebook_auth_token(fb_token, fb_id)
+    write_token(tinder_token)
     return bot.start_bot(tinder_token)
 
 
@@ -27,10 +28,14 @@ def initialize_bot_mobile(phone_number):
     bot.login_phone_number(phone_number)
     code = input("Enter code sent to your number:")
     token = bot.get_phone_auth_token(code)
+    write_token(token)
+    return bot.start_bot(token)
+
+
+def write_token(token):
     f = open("token.txt", "w")
     f.write(token)
     f.close()
-    return bot.start_bot(token)
 
 
 def read_token():

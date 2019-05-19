@@ -33,10 +33,8 @@ class TinderBot:
                 pause()
                 message = "Good evening...."
                 send_msg(match_id, message)
-                log_message = "Messaged {0}:{1}".format(
-                    match['person']['name'], message)
-                print(log_message)
-
+                print("Messaged {0}:{1}".format(
+                    match['person']['name'], message))
         else:
             match_id = matches['_id']
             message = "Good evening...."
@@ -94,11 +92,11 @@ class TinderBot:
         recs = self.__get_recs()
         recs_status = recs['status']
         if recs_status == 200:
-            self.results = recs["results"]
+            results = recs["results"]
             self.bot_alive = True
             old_matches = self.__get_all_matches()
             self.old_matches_num = len(old_matches)
-            self.find_matches(self.results)
+            self.find_matches(results)
             all_matches = self.__get_all_matches()
             new_matches = self.__get_new_matches(all_matches)
             if new_matches:

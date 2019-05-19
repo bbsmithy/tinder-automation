@@ -1,9 +1,10 @@
-import tinder_api
 import json
-import features
 import sys
-import phone_auth_token
 import time
+
+from app.phone_auth_token import phone_login, getToken
+from app.tinder_api import send_msg, like, get_recommendations, get_updates, get_auth_token, update_xauth_token
+from app.features import pause
 
 
 class TinderBot:
@@ -28,9 +29,9 @@ class TinderBot:
         if isinstance(matches, list):
             for match in matches:
                 match_id = match['_id']
-                features.pause()
+                pause()
                 message = "Good evening...."
-                tinder_api.send_msg(match_id, message)
+                send_msg(match_id, message)
                 log_message = "Messaged {0}:{1}".format(
                     match['person']['name'], message)
                 print(log_message)
@@ -38,7 +39,7 @@ class TinderBot:
         else:
             match_id = matches['_id']
             message = "Good evening...."
-            tinder_api.send_msg(match_id, message)
+            send_msg(match_id, message)
             log_message = "Messaged {0}:{1}".format(
                 match['person']['name'], message)
             print(log_message)
@@ -49,32 +50,32 @@ class TinderBot:
     def find_matches(self, results):
         for idx, rec in enumerate(results):
             if self.bot_alive is True:
-                tinder_api.like(rec['_id'])
+                like(rec['_id'])
                 self.print_details(rec)
                 time.sleep(1)
             else:
                 break
 
     def __get_recs(self):
-        return tinder_api.get_recommendations(self.auth_token)
+        return get_recommendations(self.auth_token)
 
     def __get_all_matches(self):
-        return tinder_api.get_updates()['matches']
+        return get_updates()['matches']
 
     def login_facebook(self, fb_token, fb_id):
-        self.auth_token = tinder_api.get_auth_token(fb_token, fb_id)
-        tinder_api.update_xauth_token(self.auth_token)
+        self.auth_token = get_auth_token(fb_token, fb_id)
+        update_xauth_token(self.auth_token)
         return self.auth_token
 
     def login_phone_number(self, number):
-        self.req_code = phone_auth_token.phone_login(number)
+        self.req_code = phone_login(number)
         self.phone_number = number
         return True
 
     def get_phone_auth_token(self, code):
-        self.auth_token = phone_auth_token.getToken(
+        self.auth_token = getToken(
             self.phone_number, code, self.req_code)
-        tinder_api.update_xauth_token(self.auth_token)
+        update_xauth_token(self.auth_token)
         return self.auth_token
 
     def stop_bot(self):

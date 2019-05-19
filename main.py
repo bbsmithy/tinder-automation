@@ -1,8 +1,8 @@
-from tinder_bot import TinderBot
 import urllib3
 import argparse
-import fb_auth_token
-import tinder_api
+from app.tinder_bot import TinderBot
+from app.fb_auth_token import get_fb_access_token, get_fb_id
+from app.config import CONFIG
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 parser = argparse.ArgumentParser(description="Flip a switch by setting a flag")
@@ -15,25 +15,12 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-
-# Command line arguments
-# -m: Mobile number login
-# -e: Email facebook login
-# -ps: Password facebook login
-# -help: Gets help
-
-# -config: config file json file (if found ignore all other commands)
-# {'login_type': 'facebook', 'email': 'bean.smith77@gmail.com', 'password': 'some_passy_word', 'number': '0838100085'}
-
-# Example way to run
-# python3 tinder-automation -m
-
 bot = TinderBot()
 
 
 def initialize_bot_facebook(email, password):
-    fb_token = fb_auth_token.get_fb_access_token(email, password)
-    fb_id = fb_auth_token.get_fb_id(fb_token)
+    fb_token = get_fb_access_token(email, password)
+    fb_id = get_fb_id(fb_token)
     tinder_token = bot.login_facebook(fb_token, fb_id)
     return bot.start_bot(tinder_token)
 

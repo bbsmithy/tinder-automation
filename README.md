@@ -1,14 +1,9 @@
 # Tinder Automation
 
-A tool for automating liking/messaging on Tinder
+A package for automating liking/messaging on Tinder (still in progress)
 
-## Command line arguments:
+```from tinder_automation import TinderAutomation
 
+ta = TinderAutomation()
+ta.start({"login_method": "facebook", "email": "xxx", "password": "xxx"})```
 
-`python3 main.py (args)`
-
-`-m (mobile number)` Login using mobile method
-
-`-e (email)` Facebook email for FB login method
-
-`-p (password)` Facebook password for FB login method

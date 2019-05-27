@@ -3,7 +3,7 @@
 from datetime import date, datetime
 from random import random
 from time import sleep
-from app.tinder_api import get_updates, get_person
+from .tinder_api import get_updates, get_person
 
 
 '''

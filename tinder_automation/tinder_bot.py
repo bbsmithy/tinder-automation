@@ -2,10 +2,10 @@ import json
 import sys
 import time
 
-from app.phone_auth_token import phone_login, getToken
-from app.fb_auth_token import get_fb_access_token, get_fb_id
-from app.tinder_api import send_msg, like, get_recommendations, get_updates, get_auth_token, update_xauth_token
-from app.features import pause
+from .phone_auth_token import phone_login, getToken
+from .fb_auth_token import get_fb_access_token, get_fb_id
+from .tinder_api import send_msg, like, get_recommendations, get_updates, get_auth_token, update_xauth_token
+from .features import pause
 
 
 class TinderBot:
@@ -64,6 +64,9 @@ class TinderBot:
     def login_facebook(self, email, password):
         fb_token = get_fb_access_token(email, password)
         fb_id = get_fb_id(fb_token)
+
+        if('error' in fb_token or 'error' in fb_id):
+            return False
 
         return {fb_token, fb_id}
 
